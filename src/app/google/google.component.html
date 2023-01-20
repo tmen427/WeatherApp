@@ -1,0 +1,64 @@
+
+
+
+
+<div class="map" >
+
+    <google-map [center]="center" height="700px" margin="auto" 
+        width= "100%"[zoom]="zoom" (mapClick)="AddMarkers($event)">
+
+
+            <map-marker *ngFor="let markerPosition of markerPositions"
+            [position]="markerPosition"
+            [options]="markerOptions">
+            </map-marker>
+        
+        
+      </google-map>
+
+</div> 
+
+
+
+ 
+<div class="card-group">
+   
+    <div class="card" *ngIf="WeatherApi, else noPosts">
+        <div class="card-body">
+        <h5 class="card-title">Current Temperture</h5>
+        <ul>
+        <li><p class="card-text">The current temp is: {{Fahrienheit | number: '1.0-0'}} degrees Fahrenheit</p></li>
+        <li><p class="card-text">With a longitude and latitude of : {{Frontendlatitude | number: '1.1'}} and {{Frontendlongitude | number: '1.1'}}</p></li>
+        <li><p class="card-text">{{currentTime}}</p></li>
+        </ul>
+      </div>
+      
+    </div>
+
+    <ng-template #noPosts>
+        <div class="card">
+            <div class="card-body">
+            <h5 class="card-title">Temperture Info</h5>
+            <p class="card-text">Click on the map to reveal the temperture!</p>
+          
+          </div>
+       </div>
+    </ng-template>
+
+ 
+    <div class="card">
+        <div class="card-body">
+        <h5 class="card-title">Temperature App</h5>
+        <p class="card-text">Using GoogleMaps Api and OpenWeatherApi, this site will reveal the temperture of any given location on the map!</p>
+        <p class="card-text">The backend is created on .NET Api and the frontend is written in Angular. </p>
+        <p class="card-text">The website is hosted on an Amazon Ec2 server with Niginx as a reverse proxy server to Kestrel.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-body" [ngStyle]="{margin:'auto'} ">
+        &#169; 2023
+    </div>
+  </div>
