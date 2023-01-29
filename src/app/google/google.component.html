@@ -8,9 +8,10 @@
         width= "100%"[zoom]="zoom" (mapClick)="AddMarkers($event)">
 
 
-            <map-marker *ngFor="let markerPosition of markerPositions"
-            [position]="markerPosition"
-            [options]="markerOptions">
+            <map-marker *ngFor="let markerPosition of ultimateArray"
+            [position]="markerPosition.markerPositions"
+            [options]="markerPosition.markerOptions"
+            >
             </map-marker>
         
         

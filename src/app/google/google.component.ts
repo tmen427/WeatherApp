@@ -14,10 +14,14 @@ export class GoogleComponent {
 
   center: google.maps.LatLngLiteral = {lat: 44.986656, lng: -93.258133};
   zoom = 9;
+  Alphabet:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; 
+  counter:  number = 0; 
+  //the initial values
+  markerOptions: google.maps.MarkerOptions = {draggable: false, label: 'first'};
 
-  markerOptions: google.maps.MarkerOptions = {draggable: false};
   markerPositions: google.maps.LatLngLiteral[] = [];
 
+  ultimateArray : any[] = []; 
 
   url: string = "";
   WeatherApi: any;  
@@ -36,7 +40,8 @@ setTime() {
 
 
  AddMarkers(event: any) {
-  
+
+
   //when you click on the map the googleapi reveals the longitude and latitude 
     this.longitude = event.latLng?.lng(); 
     this.latitude = event.latLng?.lat(); 
@@ -46,7 +51,14 @@ setTime() {
     this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
   //get the temperture based off the backend api
     this.getBackEndApi(this.url); 
+
+    //you have to make this custom array if you want custom labels on your markers, loop thru on the frontend
+    this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude} }); 
+    console.log(this.ultimateArray); 
+
+
     this.markerPositions.push(event.latLng?.toJSON())
+   // console.log(event.latLng?.toJSON())
     this.setTime(); 
     } 
 
@@ -58,7 +70,7 @@ setTime() {
       this.Frontendlongitude = this.longitude;  
     }
  
-    //observable
+
   getBackEndApi(frontEndUrl: string) {
     return this.Http.get(frontEndUrl).subscribe({
       next: response => {this.WeatherApi = response
