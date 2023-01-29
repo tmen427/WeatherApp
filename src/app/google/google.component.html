@@ -31,10 +31,34 @@
         <li><p class="card-text">The current temp is: {{Fahrienheit | number: '1.0-0'}} degrees Fahrenheit</p></li>
         <li><p class="card-text">With a longitude and latitude of : {{Frontendlatitude | number: '1.1'}} and {{Frontendlongitude | number: '1.1'}}</p></li>
         <li><p class="card-text">{{currentTime}}</p></li>
+        <button type="button" class="btn btn-primary btn-sm" (click)="ClearMarkers()">Clear Markers</button>
+        <button type="button" class="btn btn-primary btn-sm"  *ngIf="Compare, else showCompare" (click)="CompareMarkers()">Compare Markers</button>
         </ul>
       </div>
       
     </div>
+
+    <ng-template #showCompare>
+      <div class="card">
+          <div class="card-body">
+          <h5 class="card-title">Compare with other markers</h5>
+          <p class="card-text">Compare information with another marker here <p>
+          
+                      
+            <div class="form-group">
+              <label for="power">Marker Name</label>
+              <select class="form-control" id="name" required>
+                <option *ngFor="let label of ultimateArray" [value]="label">{{label.markerOptions.label}}</option>
+              </select>
+             
+              <button type="button" class="btn btn-outline-primary" (click)="BinarySearch($event)">search</button>
+            </div>
+
+        </div>
+     </div>
+  </ng-template>
+
+
 
     <ng-template #noPosts>
         <div class="card">

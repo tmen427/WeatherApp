@@ -62,6 +62,25 @@ setTime() {
     this.setTime(); 
     } 
 
+    Compare: boolean = true; 
+    ClearMarkers() {
+      //clear everything on the map
+      this.WeatherApi = ""; 
+      this.ultimateArray = []; 
+    }
+
+    CompareMarkers() {
+    //  this.WeatherApi = "";
+      this.Compare = false;  
+      
+    }
+
+    BinarySearch(event: any) {
+        console.log(event.target.value); 
+
+
+    }
+
   //this method is created in order to synchronize the tempeture api and googlemaps longitued and latiude api on the frontend
   //becuase the googleapi is faster then the weatherapi, they won't be sychronized
   //use the method to place in the latitude and longitude into new variables, and call the method in the observable after the first api is called 
