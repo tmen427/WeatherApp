@@ -40,9 +40,10 @@ setTime() {
    }
 
 
+
+ initialMarker: string = '';  
+ 
  AddMarkers(event: any) {
-
-
   //when you click on the map the googleapi reveals the longitude and latitude 
     this.longitude = event.latLng?.lng(); 
     this.latitude = event.latLng?.lat(); 
@@ -53,14 +54,38 @@ setTime() {
   //get the temperture based off the backend api
     this.getBackEndApi(this.url); 
 
-    //you have to make this custom array if you want custom labels on your markers, loop thru on the frontend
-    this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude} }); 
-    console.log(this.ultimateArray); 
 
+  if (this.WeatherApi==null) {
+    try {
+        //add delay because initially this.WeathApi value is not instantaneous 
+     setTimeout(() => {    
+        this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
+         }, 1000)}
+       catch(Exception) {
+          console.log('there is no response from the backend')
+       }
+    }
+    else {
 
+       this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
+      // console.log(this.ultimateArray)
+
+  }
+
+    setTimeout(()=> {console.log(this.ultimateArray)}, 2000)
+
+      if (this.counter<=0) {
+    //this is used for the frontend...
+      setTimeout(()=> this.initialMarker = this.Alphabet[this.counter-1], 1000); 
+      }
+      else {
+        this.initialMarker = this.Alphabet[this.counter-1]; 
+      }
+
+    //this.initialMarker = this.Alphabet[this.counter-1];     
     this.markerPositions.push(event.latLng?.toJSON())
-   // console.log(event.latLng?.toJSON())
     this.setTime(); 
+  
     } 
 
     Compare: boolean = true; 
@@ -73,39 +98,38 @@ setTime() {
     }
 
     CompareMarkers() {
-    //  this.WeatherApi = "";
       this.Compare = false;  
-      
     }
 
     
    showSearch: boolean = false; 
+   // put this values in an interface in the future
    BinarySearchLabel : string = ''; 
    BinarySearchLongitude : string = ''; 
    BinarySearchLatitude : string = ''; 
+   BinarySearchTemp : string = ''; 
 
     BinarySearch() {
  //     console.log(this.search); 
       if (this.search=="") {
-        console.log('nothingright now'); 
+        console.log('nothing right now'); 
       }
       else {
       
         this.ultimateArray.forEach(element => {
           if(element.markerOptions.label==this.search) {
-            console.log(this.search); 
+            this.BinarySearchTemp = this.convertToFahrenheit1(element.weather.temp);  
+            
             this.BinarySearchLabel = this.search; 
             this.BinarySearchLatitude = element.markerPositions.lat; 
             this.BinarySearchLongitude = element.markerPositions.lng; 
           }
-       
        
         });
     
         this.showSearch = true; 
       }
 
-      //if you choose anything then show it's value
     }
 
   //this method is created in order to synchronize the tempeture api and googlemaps longitued and latiude api on the frontend
@@ -133,6 +157,13 @@ setTime() {
   convertToFahrenheit(kevlins: number) {
     this.Fahrienheit = (9/5)*(kevlins-273)+32; 
     }
+
+   convertToFahrenheit1(k: number) : string {
+    let calc = ((9/5)*(k-273)+32); 
+    let convertToSTring = calc.toString(); 
+    console.log('thisis teh value in the function' + convertToSTring)  
+    return convertToSTring; 
+   }
 
 
 }
