@@ -95,6 +95,7 @@ setTime() {
       this.WeatherApi = ""; 
       this.ultimateArray = []; 
       this.counter = 0; 
+      this.Compare = true; 
     }
 
     CompareMarkers() {
