@@ -6,7 +6,7 @@ import { HttpClientModule} from '@angular/common/http';
 
 import { GoogleMapsModule } from '@angular/google-maps'; 
 import { GoogleComponent } from './google/google.component';
-
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -17,7 +17,7 @@ import { GoogleComponent } from './google/google.component';
     providers: [],
     bootstrap: [AppComponent],
     imports: [
-        BrowserModule, HttpClientModule, ReactiveFormsModule, GoogleMapsModule,
+        BrowserModule, HttpClientModule, ReactiveFormsModule, GoogleMapsModule, FormsModule
 
     ]
 })

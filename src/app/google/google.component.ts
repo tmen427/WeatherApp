@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {HttpClient} from '@angular/common/http'; 
-
-
+import { FormsModule} from '@angular/forms';
 @Component({
   selector: 'app-google',
   templateUrl: './google.component.html',
@@ -32,7 +31,9 @@ export class GoogleComponent {
   Error: string = ""; 
   Fahrienheit : number = 0; 
   currentTime = new Date();
+ 
 
+  search: string = "";  
 
 setTime() {
   this.currentTime.setDate(this.currentTime.getDate() - 2);
@@ -63,10 +64,12 @@ setTime() {
     } 
 
     Compare: boolean = true; 
+    
     ClearMarkers() {
       //clear everything on the map
       this.WeatherApi = ""; 
       this.ultimateArray = []; 
+      this.counter = 0; 
     }
 
     CompareMarkers() {
@@ -75,10 +78,34 @@ setTime() {
       
     }
 
-    BinarySearch(event: any) {
-        console.log(event.target.value); 
+    
+   showSearch: boolean = false; 
+   BinarySearchLabel : string = ''; 
+   BinarySearchLongitude : string = ''; 
+   BinarySearchLatitude : string = ''; 
 
+    BinarySearch() {
+ //     console.log(this.search); 
+      if (this.search=="") {
+        console.log('nothingright now'); 
+      }
+      else {
+      
+        this.ultimateArray.forEach(element => {
+          if(element.markerOptions.label==this.search) {
+            console.log(this.search); 
+            this.BinarySearchLabel = this.search; 
+            this.BinarySearchLatitude = element.markerPositions.lat; 
+            this.BinarySearchLongitude = element.markerPositions.lng; 
+          }
+       
+       
+        });
+    
+        this.showSearch = true; 
+      }
 
+      //if you choose anything then show it's value
     }
 
   //this method is created in order to synchronize the tempeture api and googlemaps longitued and latiude api on the frontend
