@@ -12,7 +12,8 @@ export class GoogleComponent {
   constructor(private Http: HttpClient){}
 
   center: google.maps.LatLngLiteral = {lat: 44.986656, lng: -93.258133};
-  zoom = 9;
+  //zoom = 9;
+  zoom = 5; 
   Alphabet:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; 
   counter:  number = 0; 
   //the initial values
@@ -55,38 +56,16 @@ setTime() {
     this.getBackEndApi(this.url); 
 
 
-  if (this.WeatherApi==null) {
-    try {
-        //add delay because initially this.WeathApi value is not instantaneous 
-     setTimeout(() => {    
-        this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
-         }, 1000)}
-       catch(Exception) {
-          console.log('there is no response from the backend')
-       }
-    }
-    else {
-
-       this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
-      // console.log(this.ultimateArray)
-
-  }
-
-    setTimeout(()=> {console.log(this.ultimateArray)}, 2000)
-
-      if (this.counter<=0) {
-    //this is used for the frontend...
-      setTimeout(()=> this.initialMarker = this.Alphabet[this.counter-1], 1000); 
-      }
-      else {
-        this.initialMarker = this.Alphabet[this.counter-1]; 
-      }
+    console.log(this.ultimateArray);
+    this.initialMarker = this.Alphabet[this.counter]; 
+  
 
     //this.initialMarker = this.Alphabet[this.counter-1];     
     this.markerPositions.push(event.latLng?.toJSON())
     this.setTime(); 
   
     } 
+
 
     Compare: boolean = true; 
     
@@ -113,14 +92,14 @@ setTime() {
     BinarySearch() {
  //     console.log(this.search); 
       if (this.search=="") {
-        console.log('nothing right now'); 
+        console.log('the search reveals nothing right now'); 
       }
       else {
       
         this.ultimateArray.forEach(element => {
           if(element.markerOptions.label==this.search) {
+         
             this.BinarySearchTemp = this.convertToFahrenheit1(element.weather.temp);  
-            
             this.BinarySearchLabel = this.search; 
             this.BinarySearchLatitude = element.markerPositions.lat; 
             this.BinarySearchLongitude = element.markerPositions.lng; 
@@ -144,8 +123,12 @@ setTime() {
 
   getBackEndApi(frontEndUrl: string) {
     return this.Http.get(frontEndUrl).subscribe({
-      next: response => {this.WeatherApi = response
+      next: response => {
+      //since weatherapi takes the longest to respond everything is dependent on it's value from the backend...
+      this.WeatherApi = response
       this.convertToFahrenheit(this.WeatherApi.temp);
+      this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
+
       this.setFrontend();      
     }, 
        error: (e) => { console.log(e) }, 
@@ -162,7 +145,7 @@ setTime() {
    convertToFahrenheit1(k: number) : string {
     let calc = ((9/5)*(k-273)+32); 
     let convertToSTring = calc.toString(); 
-    console.log('thisis teh value in the function' + convertToSTring)  
+    console.log('this is the value in the function' + convertToSTring)  
     return convertToSTring; 
    }
 
