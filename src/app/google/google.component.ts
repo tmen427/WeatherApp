@@ -12,8 +12,8 @@ export class GoogleComponent {
   constructor(private Http: HttpClient){}
 
   center: google.maps.LatLngLiteral = {lat: 44.986656, lng: -93.258133};
-  //zoom = 9;
-  zoom = 5; 
+  zoom = 8;
+
   Alphabet:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; 
   counter:  number = 0; 
   //the initial values
@@ -37,7 +37,7 @@ export class GoogleComponent {
   search: string = "";  
 
 setTime() {
-  this.currentTime.setDate(this.currentTime.getDate() - 2);
+  this.currentTime.setDate(this.currentTime.getDate());
    }
 
 
@@ -56,7 +56,7 @@ setTime() {
     this.getBackEndApi(this.url); 
 
 
-    console.log(this.ultimateArray);
+   // console.log(this.ultimateArray);
     this.initialMarker = this.Alphabet[this.counter]; 
   
 
@@ -145,7 +145,6 @@ setTime() {
    convertToFahrenheit1(k: number) : string {
     let calc = ((9/5)*(k-273)+32); 
     let convertToSTring = calc.toString(); 
-    console.log('this is the value in the function' + convertToSTring)  
     return convertToSTring; 
    }
 
