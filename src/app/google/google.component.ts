@@ -51,7 +51,8 @@ setTime() {
    
   //place the longitude and latitude into the backend(weather) api 
     //this.url = `https://localhost:7212/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
-    this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
+   // this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`;
+    this.url = `https://weather.tonymdesigns.com/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
   //get the temperture based off the backend api
     this.getBackEndApi(this.url); 
 
