@@ -80,13 +80,14 @@ setTime() {
       this.ultimateArray = []; 
       this.counter = 0; 
       this.Compare = true; 
+      this.showInformation = true; 
     }
 
     CompareMarkers() {
       this.Compare = false;  
     }
 
-    
+   showInformation: boolean = true; 
    showSearch: boolean = false; 
    // put this values in an interface in the future
    BinarySearchLabel : string = ''; 
@@ -113,6 +114,7 @@ setTime() {
         });
     
         this.showSearch = true; 
+  
       }
 
     }
@@ -133,7 +135,7 @@ setTime() {
       this.WeatherApi = response
       this.convertToFahrenheit(this.WeatherApi.temp);
       this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
-
+      this.showInformation = false; 
       this.setFrontend();      
     }, 
        error: (e) => { console.log(e) }, 
