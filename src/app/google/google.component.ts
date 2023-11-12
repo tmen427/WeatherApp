@@ -6,11 +6,15 @@ import { FormsModule} from '@angular/forms';
   templateUrl: './google.component.html',
   styleUrls: ['./google.component.css']
 })
+
+
+
+
 export class GoogleComponent {
 
 
   constructor(private Http: HttpClient){}
-
+  
   center: google.maps.LatLngLiteral = {lat: 44.986656, lng: -93.258133};
   zoom = 8;
 

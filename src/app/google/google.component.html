@@ -1,107 +1,89 @@
 
+<div class="parent">
 
+<div class="sidebar">
 
+  <div class="card"  [ngStyle]="{'margin': '10px'}">
+    <div class="card-group">
+      <div class="card" *ngIf="WeatherApi">
+          <div class="card-body">
+          <h5 class="card-title">Current Stats for Marker {{initialMarker}}</h5>
+          <ul>
+          <li><p class="card-text">Temperture: {{Fahrienheit | number: '1.0-0'}} degrees Fahrenheit</p></li>
+          <li><p class="card-text">Longitude and Latitude: {{Frontendlatitude | number: '1.1'}} and {{Frontendlongitude | number: '1.1'}}</p></li>
+          <li><p class="card-text">{{currentTime}}</p></li>
+          <button type="button" class="btn btn-primary btn-sm" [ngStyle]="{'margin': '5px'}"(click)="ClearMarkers()">Clear Markers</button>
+          <button type="button" class="btn btn-primary btn-sm"  [ngStyle]="{'margin': '5px'}"*ngIf="Compare, else showCompare" (click)="CompareMarkers()">Compare Markers</button>
+          </ul>
+        </div>
+      </div>    
+   <ng-template #showCompare>
+        <div class="card">
+            <div class="card-body">
+            <h5 class="card-title">Compare with other markers</h5>
+            <p class="card-text">Compare information with another marker here <p>
+                          
+              <div class="form-group">
+                <label for="search">Marker Name</label>
+                <select class="form-control"  id="search" required [(ngModel)]="search">
+                  <option *ngFor="let label of ultimateArray">{{label.markerOptions.label}}</option>
+                </select>    
+                <button type="submit" class="btn btn-outline-primary" (click)="BinarySearch()">search</button>
+              </div>
+  
+              <div *ngIf="showSearch">
+                <div class="card-body">
+                  <h5 class="card-title">Current Temperture for Marker {{BinarySearchLabel}}</h5>
+                  <ul>
+                  <li><p class="card-text">Temp: {{BinarySearchTemp | number: '1.0-0'}} degrees Fahrenheit</p></li>
+                  <li><p class="card-text">Longitude and Latitude: {{BinarySearchLatitude | number: '1.1'}} and {{BinarySearchLongitude | number: '1.1'}}</p></li>
+                  <li><p class="card-text">{{currentTime}}</p></li>
+                 </ul>
+                </div>
+  
+              </div>          
+          </div>
+       </div>
+    </ng-template>
+    </div>
+  
+   </div>
+  
+  <div class="card" [ngStyle]="{'margin': '10px'}">
+    <div class="card-body">
+      <h5 class="card-title">How this site works...</h5>
+      <p class="card-text">Click on any point of the map and it will reveal the temperture!</p> 
+    </div>
+  </div>  
 
-<div class="map" >
+  
+  <div class="card"  [ngStyle]="{'margin': '10px'}" >
+    <div class="card-body">
+      <h5 class="card-title">Information About this Site</h5>
+      <ul>
+      <li><p class="card-text">For this website, I combined the Google Maps Api and OpenWeather Api in order to reveal the temperature and location when clicking on the map.</p></li>
+      <li><p class="card-text">The backend is created in c#(.NET) and the frontend is written in Angular. </p> </li>
+      <li> <p class="card-text">The website is hosted on an Amazon Ec2 server with Niginx as a reverse proxy server to the Kestrel server.</p></li>
+      </ul>
+    </div>
+  </div>  
+</div>
 
-    <google-map [center]="center" height="700px" margin="auto" 
+<div class="map" [ngStyle]="{'borderradius': '30px'}">
+    <google-map [center]="center" height="700px"  padding="10px" border-radius='30px'
         width= "100%"[zoom]="zoom" (mapClick)="AddMarkers($event)">
-
-
             <map-marker *ngFor="let markerPosition of ultimateArray"
             [position]="markerPosition.markerPositions"
             [options]="markerPosition.markerOptions"
             >
-            </map-marker>
-        
-        
+            </map-marker>  
       </google-map>
-
 </div> 
 
-
-
+</div>
  
-<div class="card-group">
-   
-    <div class="card" *ngIf="WeatherApi, else noPosts">
-        <div class="card-body">
-        <h5 class="card-title">Current Temperture for Marker {{initialMarker}}</h5>
-        <ul>
-        <li><p class="card-text">The current temp is: {{Fahrienheit | number: '1.0-0'}} degrees Fahrenheit</p></li>
-        <li><p class="card-text">With a longitude and latitude of : {{Frontendlatitude | number: '1.1'}} and {{Frontendlongitude | number: '1.1'}}</p></li>
-        <li><p class="card-text">{{currentTime}}</p></li>
-        <button type="button" class="btn btn-primary btn-sm" [ngStyle]="{'margin': '5px'}"(click)="ClearMarkers()">Clear Markers</button>
-        <button type="button" class="btn btn-primary btn-sm"  [ngStyle]="{'margin': '5px'}"*ngIf="Compare, else showCompare" (click)="CompareMarkers()">Compare Markers</button>
-        </ul>
-      </div>
-      
-    </div>
+
+
    
 
-    <ng-template #showCompare>
-      <div class="card">
-          <div class="card-body">
-          <h5 class="card-title">Compare with other markers</h5>
-          <p class="card-text">Compare information with another marker here <p>
-          
-                      
-            <div class="form-group">
-              <label for="search">Marker Name</label>
-              <select class="form-control"  id="search" required [(ngModel)]="search">
-                <option *ngFor="let label of ultimateArray">{{label.markerOptions.label}}</option>
-              </select>    
-              <button type="submit" class="btn btn-outline-primary" (click)="BinarySearch()">search</button>
-            </div>
-
-            <div *ngIf="showSearch">
-              <div class="card-body">
-                <h5 class="card-title">Current Temperture for Marker {{BinarySearchLabel}}</h5>
-                <ul>
-                <li><p class="card-text">The current temp : {{BinarySearchTemp | number: '1.0-0'}} degrees Fahrenheit</p></li>
-                <li><p class="card-text">With a longitude and latitude of : {{BinarySearchLatitude | number: '1.1'}} and {{BinarySearchLongitude | number: '1.1'}}</p></li>
-                <li><p class="card-text">{{currentTime}}</p></li>
-               </ul>
-              </div>
-
-
-
-
-
-            </div>
-
-
-          
-        </div>
-     </div>
-  </ng-template>
-
-
-
-    <ng-template #noPosts>
-        <div class="card">
-            <div class="card-body">
-            <h5 class="card-title">Temperture Info</h5>
-            <p class="card-text">Click on the map to reveal the temperture!</p>
-          
-          </div>
-       </div>
-    </ng-template>
-
  
-    <div class="card">
-        <div class="card-body">
-        <h5 class="card-title">Temperature App</h5>
-        <p class="card-text">Using GoogleMaps Api and OpenWeatherApi, this site will reveal the temperture of any given location on the map!</p>
-        <p class="card-text">The backend is created on .NET Api and the frontend is written in Angular. </p>
-        <p class="card-text">The website is hosted on an Amazon Ec2 server with Niginx as a reverse proxy server to Kestrel.</p>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="card">
-    <div class="card-body" [ngStyle]="{margin:'auto'} ">
-        &#169; 2023
-    </div>
-  </div>
