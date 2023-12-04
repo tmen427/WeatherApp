@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {HttpClient} from '@angular/common/http'; 
-import { FormsModule} from '@angular/forms';
+import {HttpClient, HttpHeaders} from '@angular/common/http'; 
+import { FormsModule, FormGroup, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
 @Component({
   selector: 'app-google',
   templateUrl: './google.component.html',
@@ -16,109 +16,40 @@ export class GoogleComponent {
   constructor(private Http: HttpClient){}
   
   center: google.maps.LatLngLiteral = {lat: 44.986656, lng: -93.258133};
-  zoom = 8;
-
-  Alphabet:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']; 
-  counter:  number = 0; 
+  zoom = 12;
+  
   //the initial values
-  markerOptions: google.maps.MarkerOptions = {draggable: false, label: 'first'};
+ // markerOptions: google.maps.MarkerOptions = {draggable: false, label: 'first'};
 
-  markerPositions: google.maps.LatLngLiteral[] = [];
+ // markerPositions: google.maps.LatLngLiteral[] = [];
 
   ultimateArray : any[] = []; 
 
   url: string = "";
-  WeatherApi: any;  
+  BackendResponse: any;  
+  showMarkerInformation: boolean = false; 
   longitude: number = 0; 
   latitude: number = 0; 
   Frontendlongitude: number = 0; 
   Frontendlatitude: number = 0 ; 
   Error: string = ""; 
-  Fahrienheit : number = 0; 
-  currentTime = new Date();
- 
+  timeElapsed = Date.now();
+  today = new Date(this.timeElapsed).toUTCString();
+  allpionts: any;  
+  showInformation: boolean = true; 
+ applyForm = new FormGroup({
+  comments: new FormControl('', [Validators.required, Validators.max(10)]),
 
-  search: string = "";  
+});
 
-setTime() {
-  this.currentTime.setDate(this.currentTime.getDate());
-   }
-
-
-
- initialMarker: string = '';  
- 
  AddMarkers(event: any) {
   //when you click on the map the googleapi reveals the longitude and latitude 
     this.longitude = event.latLng?.lng(); 
     this.latitude = event.latLng?.lat(); 
-   
-  //place the longitude and latitude into the backend(weather) api 
-    //this.url = `https://localhost:7212/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
-   // this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`;
-    this.url = `https://weather.tonymdesigns.com/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
-  //get the temperture based off the backend api
-    this.getBackEndApi(this.url); 
-
-
-   // console.log(this.ultimateArray);
-    this.initialMarker = this.Alphabet[this.counter]; 
-  
-
-    //this.initialMarker = this.Alphabet[this.counter-1];     
-    this.markerPositions.push(event.latLng?.toJSON())
-    this.setTime(); 
-  
+    this.postBackEndApi(this.latitude, this.longitude); 
     } 
 
-
-    Compare: boolean = true; 
-    
-    ClearMarkers() {
-      //clear everything on the map
-      this.WeatherApi = ""; 
-      this.ultimateArray = []; 
-      this.counter = 0; 
-      this.Compare = true; 
-      this.showInformation = true; 
-    }
-
-    CompareMarkers() {
-      this.Compare = false;  
-    }
-
-   showInformation: boolean = true; 
-   showSearch: boolean = false; 
-   // put this values in an interface in the future
-   BinarySearchLabel : string = ''; 
-   BinarySearchLongitude : string = ''; 
-   BinarySearchLatitude : string = ''; 
-   BinarySearchTemp : string = ''; 
-
-    BinarySearch() {
- //     console.log(this.search); 
-      if (this.search=="") {
-        console.log('the search reveals nothing right now'); 
-      }
-      else {
-      
-        this.ultimateArray.forEach(element => {
-          if(element.markerOptions.label==this.search) {
-         
-            this.BinarySearchTemp = this.convertToFahrenheit1(element.weather.temp);  
-            this.BinarySearchLabel = this.search; 
-            this.BinarySearchLatitude = element.markerPositions.lat; 
-            this.BinarySearchLongitude = element.markerPositions.lng; 
-          }
-       
-        });
-    
-        this.showSearch = true; 
   
-      }
-
-    }
-
   //this method is created in order to synchronize the tempeture api and googlemaps longitued and latiude api on the frontend
   //becuase the googleapi is faster then the weatherapi, they won't be sychronized
   //use the method to place in the latitude and longitude into new variables, and call the method in the observable after the first api is called 
@@ -127,7 +58,86 @@ setTime() {
       this.Frontendlongitude = this.longitude;  
     }
  
+    submitApplication() {
+     
+        let frontEndUrl = 'https://localhost:7201/api/Home/Put';
+        let comment = this.applyForm.value.comments;
+              
+        var body =  {lat: this.latitude.toString(), lon: this.longitude.toString(), comments: this.applyForm.value.comments}
+       //  console.log("IN THE PUT")
+       // console.log(body); 
+        let headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+          });
+        
+        let options = { headers: headers };
+    
+        this.Http.put<any>(frontEndUrl, body, options).subscribe({
+          next: response => {
+        
+            //don't really need to get the response from the server
+      //   this.BackendResponse = response
+     
+        this.showMarkerInformation = false; 
+      //remove the latest entry in the marker array and add 
+        this.ultimateArray.pop(); 
+        this.ultimateArray.push({markerOptions: {draggable: false, label: comment}, markerPositions: {lat:this.latitude, lng: this.longitude} }); 
+    
+        this.showInformation = true; 
+        this.applyForm.reset(); 
+      
+          //this is needed for the frontend 
+         this.setFrontend();      
+        }, 
+           error: (e) => { console.log("An error updating!") }, 
+    
+    
+      }); 
 
+
+    }; 
+
+   
+  postBackEndApi(lat: number, lng: number, comment: string = "Food Truck") {
+    // https://localhost:7201/api/Weather?Longitude=90&Latitude=90
+   // this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`;
+   // this.url = `https://weather.tonymdesigns.com/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
+  //get the temperture based off the backend api
+    let frontEndUrl = 'https://localhost:7201/api';
+    let latitude = lat.toString(); 
+    let longitude = lng.toString();
+
+    var body =  {lat: latitude, lon: longitude, comments: comment}
+ //   console.log('IN THE POST');
+  //  console.log(body);
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      });
+    
+    let options = { headers: headers };
+
+    return this.Http.post(frontEndUrl, body, options).subscribe({
+      next: response => {
+    //  console.log('the response from the backendn is: ') 
+     //   console.log(response)
+     this.showMarkerInformation = true;  
+     this.BackendResponse = response
+       
+    
+     this.ultimateArray.push({markerOptions: {draggable: false, label: this.BackendResponse.comments}, markerPositions: {lat:this.latitude, lng: this.longitude} }); 
+     // this.showInformation = false; 
+
+      //this is needed for the frontend 
+     this.setFrontend();      
+    }, 
+       error: (e) => { console.log("An error posting"!) }, 
+
+
+  }); 
+  }
+
+
+  /** 
   getBackEndApi(frontEndUrl: string) {
     return this.Http.get(frontEndUrl).subscribe({
       next: response => {
@@ -136,24 +146,61 @@ setTime() {
       this.convertToFahrenheit(this.WeatherApi.temp);
       this.ultimateArray.push({markerOptions: {draggable: false, label: this.Alphabet[this.counter++]}, markerPositions: {lat:this.latitude, lng: this.longitude}, weather: this.WeatherApi }); 
       this.showInformation = false; 
-      this.setFrontend();      
+      //this.setFrontend();      
     }, 
        error: (e) => { console.log(e) }, 
   //  complete: ()=> console.log("Processing complete")
 
   }); 
   }
+*/
+status: string = "";
+errorMessage : string = "";  
+ DeleteMarkers() {
+   //delete the latest marker 
+  this.Http.delete('https://localhost:7201/api/Delete')
+  .subscribe({
+      next: data => {
+          this.status = 'Delete successful';
+          this.showMarkerInformation = false; 
+ 
+          this.ultimateArray.pop(); 
+
+      },
+      error: error => {
+          this.errorMessage = error.message;
+          console.error('There was an error!', error);
+      }
+  });
+ }
+
+
 
   
-  convertToFahrenheit(kevlins: number) {
-    this.Fahrienheit = (9/5)*(kevlins-273)+32; 
-    }
+     
+  getAllPoints():any {
+    this.Http.get("https://localhost:7201/api").subscribe({
+      next: response => {
+      //load all the pionts from the backend 
+        this.allpionts = response; 
+        console.log(this.allpionts)
+    
+        for(var i = 0; i<this.allpionts.length; i++) {
+          //make markers 
+          this.ultimateArray.push({markerOptions: {draggable: false, label: this.allpionts[i].comments }, 
+       markerPositions: {lat: parseFloat(this.allpionts[i].latitude), lng: parseFloat(this.allpionts[i].longitude)},  }); 
+        }
+      }
+    })
+    return this.allpionts; 
+  }
 
-   convertToFahrenheit1(k: number) : string {
-    let calc = ((9/5)*(k-273)+32); 
-    let convertToSTring = calc.toString(); 
-    return convertToSTring; 
-   }
+
+  ngOnInit() {
+    this.getAllPoints();  
+  }
+
+
 
 
 }

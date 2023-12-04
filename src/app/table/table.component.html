@@ -1,0 +1,25 @@
+<div class="container-fluid">
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Longitude</th>
+        <th scope="col">Latitude</th>
+        <th scope="col">Date</th>
+        <th scope="col">Comments</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr  *ngFor="let x of allpionts; let i = index; ">
+        <th scope="row">{{i+1}}</th>
+        <td>{{x.longitude}}</td>
+        <td>{{x.latitude}}</td>
+        <td>{{x.dateTime}}</td>
+        <td>{{x.comments}}</td>
+        <td><button (click)="Delete(x.id)">Delete</button></td>
+      </tr>
+    
+    </tbody>
+  </table>
+  </div>

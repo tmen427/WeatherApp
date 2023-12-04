@@ -1,6 +1,6 @@
 
 .parent {
-   background-color: #ff8f00;
+   background-color: white;
    border-radius: 15px;
     margin: 20px; 
     position: relative;
@@ -37,7 +37,7 @@
     }
     .map {
       width: 100%;
-      background-color: #ff8f00;
+      background-color: white;
       margin-bottom: 10px;
       border-radius: 15px;
     }
