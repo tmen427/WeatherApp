@@ -22,6 +22,11 @@ export class GoogleComponent {
  // markerOptions: google.maps.MarkerOptions = {draggable: false, label: 'first'};
 
  // markerPositions: google.maps.LatLngLiteral[] = [];
+  
+ //remote url for backend
+  Url: string = "https://weather.tonymdesigns.com/api/"
+//local url for the backend
+  //Url: string: = "https://localhost:7201/api/"; 
 
   ultimateArray : any[] = []; 
 
@@ -60,7 +65,7 @@ export class GoogleComponent {
  
     submitApplication() {
      
-        let frontEndUrl = 'https://localhost:7201/api/Home/Put';
+       // let frontEndUrl = 'https://localhost:7201/api/Home/Put';
         let comment = this.applyForm.value.comments;
               
         var body =  {lat: this.latitude.toString(), lon: this.longitude.toString(), comments: this.applyForm.value.comments}
@@ -72,7 +77,7 @@ export class GoogleComponent {
         
         let options = { headers: headers };
     
-        this.Http.put<any>(frontEndUrl, body, options).subscribe({
+        this.Http.put<any>(this.Url+"/Home/Put", body, options).subscribe({
           next: response => {
         
             //don't really need to get the response from the server
@@ -103,7 +108,7 @@ export class GoogleComponent {
    // this.url = `http://3.86.96.14/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`;
    // this.url = `https://weather.tonymdesigns.com/api/WeatherApi?lat=${this.latitude}&lon=${this.longitude}`; 
   //get the temperture based off the backend api
-    let frontEndUrl = 'https://localhost:7201/api';
+   // let frontEndUrl = 'https://localhost:7201/api';
     let latitude = lat.toString(); 
     let longitude = lng.toString();
 
@@ -116,7 +121,7 @@ export class GoogleComponent {
     
     let options = { headers: headers };
 
-    return this.Http.post(frontEndUrl, body, options).subscribe({
+    return this.Http.post(this.Url, body, options).subscribe({
       next: response => {
     //  console.log('the response from the backendn is: ') 
      //   console.log(response)
@@ -158,7 +163,7 @@ status: string = "";
 errorMessage : string = "";  
  DeleteMarkers() {
    //delete the latest marker 
-  this.Http.delete('https://localhost:7201/api/Delete')
+  this.Http.delete(this.Url+'/Delete')
   .subscribe({
       next: data => {
           this.status = 'Delete successful';
@@ -179,7 +184,8 @@ errorMessage : string = "";
   
      
   getAllPoints():any {
-    this.Http.get("https://localhost:7201/api").subscribe({
+
+    this.Http.get(this.Url).subscribe({
       next: response => {
       //load all the pionts from the backend 
         this.allpionts = response; 

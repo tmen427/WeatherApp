@@ -13,15 +13,18 @@ export class TableComponent {
 constructor(private Http: HttpClient) {
 }
 allpionts: any;  
+Url: string = "https://weather.tonymdesigns.com/api/"
+//local url for the backend
+//Url: string: = "https://localhost:7201/api/"; 
 
-  ngOnInit() {
+ngOnInit() {
     this.getAllPoints(); 
    
   }
    
 
   getAllPoints():any {
-    this.Http.get("https://localhost:7201/api").subscribe({
+    this.Http.get(this.Url).subscribe({
       next: response => {
       //load all the pionts from the backend 
         this.allpionts = response; 
@@ -40,7 +43,7 @@ allpionts: any;
   counter: number  = 0; 
   Delete(Id: number) {
     let number_delete = Id; 
-    let url = `https://localhost:7201/api/DeleteByID?id=${number_delete}`;
+    let url = `${this.Url}DeleteByID?id=${number_delete}`;
     this.Http.delete(url).subscribe(data=> {
       console.log(data)
       location.reload(); 
